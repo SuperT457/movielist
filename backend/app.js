@@ -6,6 +6,9 @@ app.use(express.json());
 const usersRoute = require('./routes/users');
 app.use('/api', usersRoute);
 
+const authRoute = require('./routes/auth');
+app.use('/api', authRoute);
+
 app.listen(3000, () => {
   console.log('Server in ascolto sulla porta 3000');
 });
