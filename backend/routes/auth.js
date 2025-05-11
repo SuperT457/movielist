@@ -19,7 +19,7 @@ router.post('/register', async(req,res) => {
 
 		res.status(201).json({
 			message: 'Utente creato con successo',
-			userIf: result.rows[0].id
+			userId: result.rows[0].id
 		});
 	}catch(err){
 		console.error(err);
