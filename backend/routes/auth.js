@@ -31,4 +31,34 @@ router.post('/register', async(req,res) => {
 	}
 });
 
+//procedura di login
+
+const jwt = require('jsonwebtoken');
+const SECRET = 'supersegreto';
+
+router.post('/login', async(req,res) => {
+	const { username, password } = req.body;
+
+	try{
+		const result = await pool.query('SELECT * FROM users WHERE username = $1', [username]);
+		const user = result.rows[0];
+
+		if(!user){
+			return res.status(401)({error: 'Credenziali non valide' });
+		}
+
+		const isValid = await bcrypt.compare(password,user.password_hash);
+		if(!isValid){
+			return res.status(401).json({ error: 'Credenziali non valide '});
+		}
+
+		const token = jwt.sign({ userId: user.id }, SECRET, { expiresIn: '1h' });
+		res.json({ message: 'Login effettuato con successo',token });
+
+	}catch(err){
+		console.error('Errore login:',err);
+		res.status(500).json({ error: 'Errore interno '});
+	}
+});
+
 module.exports = router;
